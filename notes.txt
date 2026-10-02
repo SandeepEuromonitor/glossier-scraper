@@ -1,0 +1,141 @@
+Glossier Product Scraper – Technical Notes
+
+1. Approach
+------------
+
+The scraper collects product information from Glossier's All Products collection.
+
+The scraper uses Glossier's Shopify product JSON endpoint to retrieve structured product information such as product names, IDs, variants, prices and images.
+
+Product descriptions are collected from individual product pages using HTTP requests and BeautifulSoup.
+
+The final data is saved as CSV files.
+
+2. Tools Used
+-------------
+
+- Python
+- Requests
+- BeautifulSoup4
+- CSV module
+- JSON module
+- Shopify product JSON endpoint
+
+3. Assumptions
+--------------
+
+- The Glossier collection provides product information through its Shopify JSON endpoint.
+- Shopify product IDs and variant IDs can be used as unique identifiers.
+- Product handles can be used to construct product page URLs.
+- Product information such as price, images and descriptions may change over time.
+- The CSV output represents the data available at the time of scraping.
+
+4. Key Decisions
+----------------
+
+### Shopify JSON Endpoint
+
+The Shopify JSON endpoint was used for product discovery instead of relying only on the HTML rendered on the collection page.
+
+This provides structured information about products and variants and makes the scraper simpler and more reliable.
+
+### Variant Handling
+
+Variants are treated as separate products.
+
+The Shopify variant ID is used as the unique `product_id`.
+
+The variant title is added to the product name when applicable, and the variant price is stored separately.
+
+### Description Extraction
+
+Descriptions are collected from individual product pages because the collection data does not provide all the required description information.
+
+### CSV Output
+
+The built-in Python CSV module is used instead of pandas because the assignment only requires CSV output and the additional dependency is not necessary.
+
+5. Tradeoffs
+------------
+
+### Shopify JSON vs HTML Parsing
+
+Using the Shopify JSON endpoint makes product and variant extraction easier because the data is already structured.
+
+The tradeoff is that the scraper depends on the availability and structure of the Shopify endpoint.
+
+### Individual Product Requests
+
+An additional request is made for each product page to collect descriptions.
+
+This increases the number of HTTP requests, but it allows the scraper to collect the required description data.
+
+### No Browser Automation
+
+Selenium or Playwright was not used because the required product information could be collected using HTTP requests and structured Shopify data.
+
+This keeps the scraper lightweight and easier to run from the command line.
+
+6. Validation
+-------------
+
+The generated CSV files were checked for duplicate product/variant IDs.
+
+India:
+- 321 records
+- 321 unique IDs
+- 0 duplicate IDs
+
+US:
+- 353 records
+- 353 unique IDs
+- 0 duplicate IDs
+
+7. AI Usage
+------------
+
+AI was used during development as a coding and debugging assistant.
+
+AI assisted with:
+
+- Understanding the assignment requirements.
+- Exploring possible web scraping approaches.
+- Python syntax and library usage.
+- Understanding Shopify product data.
+- Debugging errors during development.
+- Reviewing the scraper structure.
+- Preparing documentation.
+
+Manual work included:
+
+- Writing and modifying the final scraper code.
+- Testing the scraper against the Glossier website.
+- Selecting the final output fields.
+- Configuring India and US storefront handling.
+- Implementing variant-level records.
+- Testing product and variant extraction.
+- Running the scraper and checking the generated CSV files.
+- Validating that product/variant IDs were unique.
+- Reviewing the final output for correctness.
+
+Manual edits were made to keep the scraper simple, match the assignment requirements, avoid unnecessary dependencies, and ensure that the generated data was suitable for the required CSV format.
+
+AI-generated suggestions were reviewed and tested before being included in the final implementation.
+
+8. Output
+----------
+
+The scraper generates:
+
+- output/products_india.csv
+- output/products_us.csv
+
+The CSV files contain:
+
+- product_name
+- product_id
+- image
+- url
+- price
+- description
+- scraped_at
